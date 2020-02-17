@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="jumbotron" align="center">
+  <h1 class="display-4">Такой страницы не существует</h1>
+  <p class="lead">Приносим извинения за доставленные неудобства.</p>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">На главную</a>
+</div>
+{% endblock %}

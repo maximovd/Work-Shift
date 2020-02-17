@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="jumbotron" align="center">
+  <h1 class="display-4">Произошла непредвиденная ошибка!</h1>
+  <p class="lead">Администратор ресурса был уведомлен о неполадках</p>
+  <hr class="my-4">
+  <p>Приносим извинения за доставленные неудобства</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">На главную</a>
+</div>
+{% endblock %}
