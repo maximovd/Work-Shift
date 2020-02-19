@@ -1,3 +1,4 @@
+face_recognition
 alembic==1.4.0
 astor==0.8.1
 attrs==19.3.0

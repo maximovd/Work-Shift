@@ -14,11 +14,11 @@ class Employees(db.Model):
     )
     first_name = db.Column(db.String(30), index=True)
     last_name = db.Column(db.String(30), index=True)
-    service_number = db.Column(db.String(30), index=True)
+    service_number = db.Column(db.String(30), index=True, unique=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     department = db.relationship('Department', backref='employees')
     work_shift = db.relationship('WorkShift', backref='employees')
-    encodings = db.Column(db.String(5000), unique=True)
+    encodings = db.Column(db.PickleType(), unique=True)
     photo = db.Column(db.String(128))
 
     def __str__(self):
@@ -89,9 +89,7 @@ class ServerStatus(db.Model):
     date = db.Column(
         db.Date,
         primary_key=True,
-        autoincrement=True,
         index=True,
-        unique=True,
     )
     url = db.Column(db.String, index=True)
     status = db.Column(db.Boolean)

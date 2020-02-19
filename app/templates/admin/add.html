@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+    <h1 align="center"> Добавление нового сотрудника</h1>
+    {% block app_content%}
+    <form class="container" action="add" method="post" enctype="multipart/form-data"role="form" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ wtf.form_field(form.first_name) }}
+        </p>
+        <p>
+            {{  wtf.form_field(form.last_name) }}
+        </p>
+        <p>
+            {{  wtf.form_field(form.service_number) }}
+        </p>
+        <p>
+            {{  wtf.form_field(form.department) }}
+        </p>
+
+        <div class="form-group">
+          <label>Выберите фотографию</label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" name="image" id="image">
+            <label class="custom-file-label" for="image">Выбрать фото...</label>
+          </div>
+        </div>
+
+        <p align="center">{{wtf.form_field(form.submit, class="btn btn-primary")}} </p>
+    </form>
+    {% if file_url %}
+<br>
+<img src="{{file_url}}">
+    {% endif %}
+{% endblock %}
+{% endblock %}

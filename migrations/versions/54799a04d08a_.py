@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f16dd6695c6a
+Revision ID: 54799a04d08a
 Revises: 
-Create Date: 2020-02-17 15:39:36.176168
+Create Date: 2020-02-19 16:29:54.046406
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f16dd6695c6a'
+revision = '54799a04d08a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,12 +26,12 @@ def upgrade():
     op.create_index(op.f('ix_department_id'), 'department', ['id'], unique=True)
     op.create_index(op.f('ix_department_name'), 'department', ['name'], unique=True)
     op.create_table('server_status',
-    sa.Column('date', sa.Date(), autoincrement=True, nullable=False),
+    sa.Column('date', sa.Date(), nullable=False),
     sa.Column('url', sa.String(), nullable=True),
     sa.Column('status', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('date')
     )
-    op.create_index(op.f('ix_server_status_date'), 'server_status', ['date'], unique=True)
+    op.create_index(op.f('ix_server_status_date'), 'server_status', ['date'], unique=False)
     op.create_index(op.f('ix_server_status_url'), 'server_status', ['url'], unique=False)
     op.create_table('user',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -49,7 +49,7 @@ def upgrade():
     sa.Column('last_name', sa.String(length=30), nullable=True),
     sa.Column('service_number', sa.String(length=30), nullable=True),
     sa.Column('department_id', sa.Integer(), nullable=True),
-    sa.Column('encodings', sa.String(length=5000), nullable=True),
+    sa.Column('encodings', sa.PickleType(), nullable=True),
     sa.Column('photo', sa.String(length=128), nullable=True),
     sa.ForeignKeyConstraint(['department_id'], ['department.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -58,7 +58,7 @@ def upgrade():
     )
     op.create_index(op.f('ix_employees_first_name'), 'employees', ['first_name'], unique=False)
     op.create_index(op.f('ix_employees_last_name'), 'employees', ['last_name'], unique=False)
-    op.create_index(op.f('ix_employees_service_number'), 'employees', ['service_number'], unique=False)
+    op.create_index(op.f('ix_employees_service_number'), 'employees', ['service_number'], unique=True)
     op.create_table('work_shift',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('employee_id', sa.Integer(), nullable=True),

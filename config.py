@@ -6,7 +6,7 @@ load_dotenv(os.path.join(base_dir, '.env'))
 
 
 class Config(object):
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     TESTING = False
 

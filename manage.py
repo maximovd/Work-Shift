@@ -10,7 +10,7 @@ def make_shell_context():
         'db': db,
         'User': User,
         'Department': Department,
-        'Staff': Employees,
+        'Employees': Employees,
         'WorkShift': WorkShift,
         'ServerStatus': ServerStatus,
     }

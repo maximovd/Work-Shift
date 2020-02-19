@@ -10,7 +10,7 @@ from app.models import User, Category
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('view_employees'))
+        return redirect(url_for('admin.add_new_employee'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -20,7 +20,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('view_employees')
+            next_page = url_for('admin.add_new_employee')
         return redirect(next_page)
     return render_template('auth/login.html', title='Авторизация', form=form)
 
@@ -28,4 +28,4 @@ def login():
 @bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('auth/login.html'))
+    return redirect(url_for('auth.login'))
