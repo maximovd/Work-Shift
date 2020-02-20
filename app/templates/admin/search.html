@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+    {% block app_content %}
+    <form class="container" action="admin.search" method="post" role="form" novalidate>
+        {{ search.hidden_tag() }}
+        <p id="valid_code">
+            {{ wtf.form_field(search.validation_code) }}
+        </p>
+        <p align="center">{{ wtf.form_field(search.submit, class="btn btn-primary") }}</p>
+    </form>
+    <form class="container" action="editing" method="post" role="form" novalidate>
+        <p id="hide_code">
+            {{ editing.hidden_code }}
+        </p>
+    <h1 align="center">Редактирование сертификата</h1>
+    </form>
+        <form class="container" action="editing" method="post" role="form" novalidate>
+        {{ editing.hidden_tag() }}
+        <p>
+            {{ wtf.form_field(editing.cert_id) }}
+        </p>
+        <p>
+            {{ wtf.form_field(editing.validation_code) }}
+        </p>
+        <p>
+            {{ wtf.form_field(editing.start_date) }}
+        </p>
+        <p>
+            {{  wtf.form_field(editing.end_date) }}
+        </p>
+        <p>
+            {{  wtf.form_field(editing.face_value) }}
+        </p>
+        <p>
+            {{  wtf.form_field(editing.recipient) }}
+        </p>
+        <p align="center">{{ wtf.form_field(editing.submit, class="btn btn-primary")}}</p>
+        </form>
+
+        <form class="container" action="delete" method="post" role="form" novalidate>
+            {{ editing.hidden_tag() }}
+            <p id="delete_code"> {{ delete.hidden_code }} </p>
+            <p align="right"> {{ wtf.form_field(delete.submit, class="btn btn-danger") }} </p>
+        </form>
+    <script>
+        var parentDOM = document.getElementById('validation_code').value;
+        document.getElementById('delete_code').value=parentDOM;
+    </script>
+    {% endblock %}
+{% endblock %}
