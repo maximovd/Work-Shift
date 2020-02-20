@@ -9,7 +9,14 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     TESTING = False
-
+    POSTS_PER_PAGE = 16
+    CURRENT_UPLOADS_DIRECTORY = os.path.join(
+        os.path.dirname(__file__),
+        'app',
+        'static',
+        'uploads',
+        '',
+    )
 
 class ProductionConfig(Config):
     SECRET_KEY = os.environ.get('PROD_SECRET_KEY')

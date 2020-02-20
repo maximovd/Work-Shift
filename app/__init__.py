@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
-from flask_uploads import configure_uploads
 
 
 db = SQLAlchemy()
@@ -32,7 +31,6 @@ def create_app(config_class='config.DevelopmentConfig'):
 
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
-
 
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):
