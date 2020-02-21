@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+    {% block app_content %}
+<form class="container" action="" method="post" role="form" novalidate>
+        {{ editing.hidden_tag()}}
+        <p>
+            {{ wtf.form_field(editing.first_name) }}
+        </p>
+        <p>
+            {{ wtf.form_field(editing.last_name) }}
+        </p>
+        <p>
+            {{ wtf.form_field(editing.service_number) }}
+        </p>
+        <p>
+            {{  wtf.form_field(editing.department) }}
+        </p>
+        <p align="center">{{ wtf.form_field(editing.submit, class="btn btn-primary")}}</p>
+</form>
+    {% endblock %}
+{% endblock %}

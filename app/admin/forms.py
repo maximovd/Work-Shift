@@ -37,16 +37,6 @@ class EmployeeShowForm(FlaskForm):
     submit = SubmitField('Показать')
 
 
-class EmployeeSearchForm(FlaskForm):
-    first_name = StringField('Имя', validators=[DataRequired()])
-    last_name = StringField('Фамилия', validators=[DataRequired()])
-    service_number = StringField(
-        'Табельный номер',
-        validators=[DataRequired()],
-    )
-    submit = SubmitField('Поиск')
-
-
 class EmployeeEditingForm(FlaskForm):
     first_name = StringField('Имя', validators=[DataRequired()])
     last_name = StringField('Фамилия', validators=[DataRequired()])
@@ -59,3 +49,4 @@ class EmployeeEditingForm(FlaskForm):
         validators=[DataRequired()],
         query_factory=get_departments,
     )
+    submit = SubmitField('Изменить')

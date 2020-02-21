@@ -8,6 +8,7 @@
     <th scope="col">Фамилия</th>
     <th scope="col">Табельный номер</th>
     <th scope="col">Подразделение</th>
+    <th scope="col"></th>
 </tr>
 </thead>
 
@@ -20,6 +21,7 @@
         <td>{{employee.last_name}}</td>
         <td>{{employee.service_number}}</td>
         <td>{{employee.department.name}}</td>
+        <td><a href="{{url_for('admin.employee_profile', employee_id=employee.id)}}" class="badge badge-primary">Редактировать</a></td>
     </div>
 </tr>
 {% endfor %}
