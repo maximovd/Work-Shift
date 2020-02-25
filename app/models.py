@@ -1,5 +1,6 @@
 from enum import Enum
-from flask import flash, request, current_app
+from uuid import uuid4
+from flask import flash, current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from face_recognition import face_encodings, load_image_file
@@ -27,13 +28,14 @@ class Employees(db.Model):
         return f'{self.first_name} {self.last_name}'
 
 
-def download_image(image):
+def download_image(file_name, image: str) -> str:
     destination = ''.join(
         [
             current_app.config['CURRENT_UPLOADS_DIRECTORY'],
-            image.filename,
+            file_name,
         ],
     )
+    destination = destination.replace(' ', '')
     try:
         image.save(destination)
     except IsADirectoryError:

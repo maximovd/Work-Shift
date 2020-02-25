@@ -1,47 +1,55 @@
 {% extends "admin/browse.html" %}
 {% block content %}
 <table class="table table-hover">
-<thead class="thead-light">
-<tr>
-    <th scope="col">ID</th>
-    <th scope="col">Имя</th>
-    <th scope="col">Фамилия</th>
-    <th scope="col">Табельный номер</th>
-    <th scope="col">Подразделение</th>
-    <th scope="col"></th>
-</tr>
-</thead>
+    <thead class="thead-light">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Фамилия</th>
+        <th scope="col">Табельный номер</th>
+        <th scope="col">Подразделение</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
 
-<tbody>
-{% for employee in employees.items %}
-<tr>
-    <div>
-        <th scope="row">{{employee.id}}</td>
-        <td>{{employee.first_name}}</td>
-        <td>{{employee.last_name}}</td>
-        <td>{{employee.service_number}}</td>
-        <td>{{employee.department.name}}</td>
-        <td><a href="{{url_for('admin.employee_profile', employee_id=employee.id)}}" class="badge badge-primary">Редактировать</a></td>
-    </div>
-</tr>
-{% endfor %}
-</tbody>
+    <tbody>
+    {% for employee in employees.items %}
+    <tr>
+        <div>
+            <th scope="row">{{employee.id}}
+            </td>
+            <td>{{employee.first_name}}</td>
+            <td>{{employee.last_name}}</td>
+            <td>{{employee.service_number}}</td>
+            <td>{{employee.department.name}}</td>
+            <td>
+                <a href="{{url_for('admin.employee_profile', employee_id=employee.id)}}"
+                   class="badge badge-primary">Редактировать</a></td>
+        </div>
+    </tr>
+    {% endfor %}
+    </tbody>
 </table>
 <nav aria-label="...">
-<ul class="pagination justify-content-center">
-  <li class="page-item active" aria-current="page">
+    <ul class="pagination justify-content-center">
+        <li class="page-item active" aria-current="page">
 
-    {% for page_num in employees.iter_pages() %}
-        {% if page_num %}
+            {% for page_num in employees.iter_pages() %}
+            {% if page_num %}
             {% if employees.page == page_num %}
-            <li class="page-item active"><a class="page-link" href="{{ url_for('admin.show_employees', page=page_num) }}">{{ page_num }}<span class="sr-only">(current)</span></a>
+        <li class="page-item active"><a class="page-link"
+                                        href="{{ url_for('admin.show_employees', page=page_num) }}">{{
+            page_num }}<span class="sr-only">(current)</span></a>
             {% else %}
-            <li class="page-item"><a class="page-link" href="{{ url_for('admin.show_employees', page=page_num) }}">{{ page_num }}</a>
+        <li class="page-item"><a class="page-link"
+                                 href="{{ url_for('admin.show_employees', page=page_num) }}">{{
+            page_num }}</a>
             {% endif %}
-        {% else %}
-            <li class="page-item"><a class="page-link" href="{{ url_for('admin.show_employees', page=page_num) }}">...</a>
-        {% endif %}
-        {% endfor %}
-</ul>
+            {% else %}
+        <li class="page-item"><a class="page-link"
+                                 href="{{ url_for('admin.show_employees', page=page_num) }}">...</a>
+            {% endif %}
+            {% endfor %}
+    </ul>
 </nav>
 {% endblock %}

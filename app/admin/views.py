@@ -1,3 +1,4 @@
+from uuid import uuid4
 from flask import (
     render_template,
     flash,
@@ -16,7 +17,12 @@ from app.admin.forms import (
     EmployeeShowForm,
     EmployeeEditingForm,
 )
-from app.models import Employees, Category, download_image, face_encoding_image
+from app.models import (
+    Employees,
+    Category,
+    download_image,
+    face_encoding_image,
+)
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -28,6 +34,7 @@ def add_new_employee():
     if add.validate_on_submit():
         if request.files:
             image = request.files['image']
+            photo = image.filename.replace(' ', '')
             destination = download_image(image)
             encoding = face_encoding_image(destination)
 
@@ -37,19 +44,19 @@ def add_new_employee():
             service_number=add.service_number.data,
             department=add.department.data,
             encodings=encoding,
-            photo=image.filename,
+            photo=photo,
         )
         db.session.add(employee)
 
         try:
             db.session.commit()
+            flash('Сотрудник добавлен', Category.SUCCESS.title)
         except exc.IntegrityError:
             flash(
                 'Сотрудник с таким табельным номером уже присутствует в базе!',
                 Category.DANGER.title,
             )
             return redirect(url_for('admin.add_new_employee'))
-        flash('Сотрудник добавлен', Category.SUCCESS.title)
         return redirect(url_for('admin.add_new_employee'))
     return render_template('admin/add.html', form=add)
 
@@ -108,45 +115,51 @@ def search_employee():
 @login_required
 def employee_profile(employee_id):
     editing = EmployeeEditingForm()
+    employee = Employees.query.filter_by(id=employee_id).first()
+    photo = employee.photo
 
     if request.method == 'GET':
-
         employee = Employees.query.filter_by(id=employee_id).first()
 
         editing.first_name.data = employee.first_name
         editing.last_name.data = employee.last_name
         editing.service_number.data = employee.service_number
         editing.department.data = employee.department
-        encodings = employee.encodings
-        image = employee.photo
 
     if editing.validate_on_submit():
-        if request.files:
+        employee = Employees.query.filter_by(id=employee_id).first()
 
+        if request.files:
             image = request.files['image']
-            destination = download_image(image)
+            photo = f'{uuid4()}.jpg'
+            destination = download_image(file_name=photo, image=image)
+            employee.encodings = None
+            db.session.commit()
             encodings = face_encoding_image(destination)
 
-        employee = Employees(
-            first_name=editing.first_name.data,
-            last_name=editing.service_number.data,
-            service_number=editing.service_number.data,
-            department=editing.department.data,
-            encodings=encodings,
-            photo=image,
-        )
-        db.session.add(employee)
+        employee.first_name = editing.first_name.data
+        employee.last_name = editing.last_name.data
+        employee.service_number = editing.service_number.data
+        employee.department = editing.department.data
+        employee.encodings = encodings
+        employee.photo = photo
+
         try:
             db.session.commit()
         except exc.IntegrityError:
-            flash(
-                'Сотрудник с таким табельным номером уже существует',
-                Category.DANGER.title,
+            flash('Табельный номер существует', Category.DANGER.title)
+
+            return redirect(url_for(
+                'admin.employee_profile',
+                employee_id=employee_id,
+            ),
             )
-        flash('Информация о сотруднике обновлена', Category.SUCCESS.title)
-        return redirect(url_for('admin.employee_profile'))
+
+        flash('Информация обновлена', Category.SUCCESS.title)
+
     return render_template(
         'admin/profile.html',
         title=f'{editing.first_name.data} {editing.last_name.data}',
         editing=editing,
+        image_name=photo,
     )

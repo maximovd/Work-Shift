@@ -18,6 +18,7 @@ class Config(object):
         '',
     )
 
+
 class ProductionConfig(Config):
     SECRET_KEY = os.environ.get('PROD_SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL')

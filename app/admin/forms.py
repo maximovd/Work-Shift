@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, HiddenField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired
 
@@ -49,4 +49,6 @@ class EmployeeEditingForm(FlaskForm):
         validators=[DataRequired()],
         query_factory=get_departments,
     )
+    encodings = HiddenField()
+    image = HiddenField()
     submit = SubmitField('Изменить')
