@@ -26,7 +26,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     SECRET_KEY = os.environ.get('DEV_SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('P_DEV_DATABASE_URL')
 
 
 class TestingConfig(Config):

@@ -16,12 +16,14 @@ from app.admin.forms import (
     EmployeeAddingForm,
     EmployeeShowForm,
     EmployeeEditingForm,
+    EmployeeDeleteForm,
 )
 from app.models import (
     Employees,
     Category,
     download_image,
     face_encoding_image,
+    delete_photo,
 )
 
 
@@ -34,8 +36,8 @@ def add_new_employee():
     if add.validate_on_submit():
         if request.files:
             image = request.files['image']
-            photo = image.filename.replace(' ', '')
-            destination = download_image(image)
+            photo = f'{uuid4()}.jpg'
+            destination = download_image(file_name=photo, image=image)
             encoding = face_encoding_image(destination)
 
         employee = Employees(
@@ -74,6 +76,7 @@ def browse_employees():
 @bp.route('/show', methods=['GET', 'POST'])
 @login_required
 def show_employees():
+    delete = EmployeeDeleteForm()
     show = EmployeeShowForm()
     page = request.args.get('page', 1, type=int)
 
@@ -85,6 +88,8 @@ def show_employees():
     return render_template(
         'admin/show.html',
         employees=employees,
+        show=show,
+        delete=delete,
         title='Сотрудники',
     )
 
@@ -115,37 +120,44 @@ def search_employee():
 @login_required
 def employee_profile(employee_id):
     editing = EmployeeEditingForm()
+    delete = EmployeeDeleteForm()
+
     employee = Employees.query.filter_by(id=employee_id).first()
-    photo = employee.photo
+    exist_photo = employee.photo
 
     if request.method == 'GET':
         employee = Employees.query.filter_by(id=employee_id).first()
 
+        editing.id.data = employee.id
         editing.first_name.data = employee.first_name
         editing.last_name.data = employee.last_name
         editing.service_number.data = employee.service_number
         editing.department.data = employee.department
-
+        delete.id.data = employee.id
     if editing.validate_on_submit():
         employee = Employees.query.filter_by(id=employee_id).first()
 
-        if request.files:
+        if request.files['image']:
             image = request.files['image']
-            photo = f'{uuid4()}.jpg'
-            destination = download_image(file_name=photo, image=image)
-            employee.encodings = None
-            db.session.commit()
-            encodings = face_encoding_image(destination)
+            if image.filename != '':  # TODO Exist photo filename in header
+                photo = f'{uuid4()}.jpg'
+                destination = download_image(file_name=photo, image=image)
+                delete_photo(exist_photo)
+                employee.encodings = None  # Overwriting face encodings
+                db.session.commit()
+
+                encodings = face_encoding_image(destination)
+                employee.encodings = encodings
+                employee.photo = photo
 
         employee.first_name = editing.first_name.data
         employee.last_name = editing.last_name.data
         employee.service_number = editing.service_number.data
         employee.department = editing.department.data
-        employee.encodings = encodings
-        employee.photo = photo
 
         try:
             db.session.commit()
+            flash('Информация обновлена', Category.SUCCESS.title)
         except exc.IntegrityError:
             flash('Табельный номер существует', Category.DANGER.title)
 
@@ -154,12 +166,30 @@ def employee_profile(employee_id):
                 employee_id=employee_id,
             ),
             )
-
-        flash('Информация обновлена', Category.SUCCESS.title)
-
     return render_template(
         'admin/profile.html',
         title=f'{editing.first_name.data} {editing.last_name.data}',
         editing=editing,
-        image_name=photo,
+        delete=delete,
+        image_name=exist_photo,
+    )
+
+
+@bp.route('/delete', methods=['GET', 'POST'])
+@login_required
+def delete():
+    delete = EmployeeDeleteForm()
+    editing = EmployeeDeleteForm()
+    if delete.validate_on_submit():
+        employee = Employees.query.filter_by(id=delete.id.data).first()
+        if employee is not None:
+            delete_photo(employee.photo)
+            db.session.delete(employee)
+            db.session.commit()
+            flash('Сотрудник уволен!', Category.WARNING.title)
+            return redirect(url_for('admin.add_new_employee'))
+    return render_template(
+        'admin/profile.html',
+        delete=delete,
+        editing=editing,
     )

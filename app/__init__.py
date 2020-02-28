@@ -29,15 +29,20 @@ def create_app(config_class='config.DevelopmentConfig'):
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp)
 
+    from app.shift import bp as shift_bp
+    app.register_blueprint(shift_bp)
+
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):
             os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/app.log',
-                                           maxBytes=10240, backupCount=10,
-                                           )
+        file_handler = RotatingFileHandler(
+            'logs/app.log',
+            maxBytes=10240,
+            backupCount=10,
+        )
         file_handler.setFormatter(logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s '
             '[in %(pathname)s:%(lineno)d]',

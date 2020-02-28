@@ -8,18 +8,25 @@
     <img src="../../static/uploads/{{image_name}}" width="170" height="200"
          class="img-thumbnail mx-auto d-block" alt="..."
          onerror="this.src='../../static/uploads/default.png'">
-    <p>
-        {{ wtf.form_field(editing.first_name) }}
+    <p id="employee_id">
+        {{editing.id}}
     </p>
-    <p>
-        {{ wtf.form_field(editing.last_name) }}
-    </p>
-    <p>
-        {{ wtf.form_field(editing.service_number) }}
-    </p>
-    <p>
-        {{ wtf.form_field(editing.department) }}
-    </p>
+    <div class="row">
+        <div class="col">
+            {{ wtf.form_field(editing.first_name) }}
+        </div>
+        <div class="col">
+            {{ wtf.form_field(editing.last_name) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ wtf.form_field(editing.service_number) }}
+        </div>
+        <div class="col">
+            {{ wtf.form_field(editing.department) }}
+        </div>
+    </div>
     <div class="form-group">
         <label>Выберите новую фотографию</label>
         <div class="custom-file">
@@ -30,11 +37,22 @@
         </div>
     </div>
     <p align="center">{{ wtf.form_field(editing.submit, class="btn
-        btn-primary")}}</p>
+        btn-dark")}}</p>
+</form>
+<form class="container" action="{{ url_for('admin.delete')}}" method="post"
+      role="form" novalidate>
+    {{ delete.hidden_tag() }}
+    <p id="deleting_id">{{ delete.id }}</p>
+    <p align="right"> {{wtf.form_field(delete.submit, class="btn
+        btn-danger")}}</p>
 </form>
 {% if file_url %}
 <br>
 <img src="{{file_url}}">
 {% endif %}
+<script>
+    const parentDOM = document.getElementById('employee_id').value;
+    document.getElementById('deleting_id').value = parentDOM;
+</script>
 {% endblock %}
 {% endblock %}

@@ -25,7 +25,7 @@ class EmployeeAddingForm(FlaskForm):
         query_factory=get_departments,
         allow_blank=True,
     )
-    submit = SubmitField('Сохранить')
+    submit = SubmitField('Добавить')
 
 
 class EmployeeShowForm(FlaskForm):
@@ -38,6 +38,7 @@ class EmployeeShowForm(FlaskForm):
 
 
 class EmployeeEditingForm(FlaskForm):
+    id = HiddenField()
     first_name = StringField('Имя', validators=[DataRequired()])
     last_name = StringField('Фамилия', validators=[DataRequired()])
     service_number = StringField(
@@ -52,3 +53,9 @@ class EmployeeEditingForm(FlaskForm):
     encodings = HiddenField()
     image = HiddenField()
     submit = SubmitField('Изменить')
+
+
+class EmployeeDeleteForm(FlaskForm):
+    id = HiddenField()
+    submit = SubmitField('Удалить из базы')
+

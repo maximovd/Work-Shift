@@ -1,5 +1,5 @@
+import os
 from enum import Enum
-from uuid import uuid4
 from flask import flash, current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -46,10 +46,20 @@ def download_image(file_name, image: str) -> str:
     return destination
 
 
-def face_encoding_image(destination):
+def face_encoding_image(destination: str):
     load_photos = load_image_file(destination)
     encoding = face_encodings(load_photos, num_jitters=100)
     return encoding
+
+
+def delete_photo(photo_name: str) -> None:
+    destination = ''.join(
+        [
+            current_app.config['CURRENT_UPLOADS_DIRECTORY'],
+            photo_name,
+        ],
+    )
+    os.remove(destination)
 
 
 class User(db.Model, UserMixin):
@@ -103,6 +113,7 @@ class WorkShift(db.Model):
         unique=True,
     )
     employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
+    employee = db.relationship('Employees', back_populates='work_shift')
     arrival_time = db.Column(db.DateTime, index=True)
     depature_time = db.Column(db.DateTime, index=True)
 
