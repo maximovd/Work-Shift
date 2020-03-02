@@ -7,3 +7,8 @@ install:
 
 script:
   - python -m pytest
+
+env:
+  DEV_SECRET_KEY="dont_use_this_key_in_prod_you_bastard"
+  TEST_DATABASE_URL="sqlite:////Work-Shift/test.db"
+  FLASK_APP=manage.py
