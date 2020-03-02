@@ -9,6 +9,7 @@ from flask import (
 )
 from flask_login import login_required
 from sqlalchemy import exc
+from PIL import UnidentifiedImageError
 
 from app import db
 from app.admin import bp
@@ -17,9 +18,11 @@ from app.admin.forms import (
     EmployeeShowForm,
     EmployeeEditingForm,
     EmployeeDeleteForm,
+    EmployeeShiftForm,
 )
 from app.models import (
     Employees,
+    WorkShift,
     Category,
     download_image,
     face_encoding_image,
@@ -38,8 +41,17 @@ def add_new_employee():
             image = request.files['image']
             photo = f'{uuid4()}.jpg'
             destination = download_image(file_name=photo, image=image)
-            encoding = face_encoding_image(destination)
 
+            try:
+                encoding = face_encoding_image(destination)
+            except UnidentifiedImageError:
+                flash(
+                    'Проблема с фото, загрузите еще раз',
+                    Category.DANGER.title,
+                )
+
+                delete_photo(photo)
+                return redirect(url_for('admin.add_new_employee'))
         employee = Employees(
             first_name=add.first_name.data,
             last_name=add.last_name.data,
@@ -186,10 +198,39 @@ def delete():
             delete_photo(employee.photo)
             db.session.delete(employee)
             db.session.commit()
-            flash('Сотрудник уволен!', Category.WARNING.title)
+            flash('Сотрудник удален из базы!', Category.WARNING.title)
             return redirect(url_for('admin.add_new_employee'))
     return render_template(
         'admin/profile.html',
         delete=delete,
         editing=editing,
+    )
+
+
+@bp.route('/shift', methods=['GET', 'POST'])
+@login_required
+def employee_shift():
+    shift = EmployeeShiftForm()
+    page = request.args.get('page', 1, type=int)
+    employees = (
+        WorkShift.query.outerjoin(Employees).filter_by(
+            department=shift.department.data,
+        ).paginate(
+            page=page, per_page=current_app.config['POSTS_PER_PAGE'],
+        )
+    )
+    if shift.validate_on_submit():
+        employees = (
+            WorkShift.query.outerjoin(Employees).filter_by(
+                department=shift.department.data,
+            ).paginate(
+                page=page, per_page=current_app.config['POSTS_PER_PAGE'],
+            )
+        )
+
+    return render_template(
+        'admin/show_shift.html',
+        title='Рабочие часы',
+        shift=shift,
+        employees=employees,
     )

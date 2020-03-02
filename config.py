@@ -17,6 +17,7 @@ class Config(object):
         'uploads',
         '',
     )
+    ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
 
 
 class ProductionConfig(Config):

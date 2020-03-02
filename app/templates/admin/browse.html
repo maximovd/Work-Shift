@@ -2,6 +2,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block content %}
 <h3 align="center"> Показать сотрудников подразделения</h3>
+<hr>
 {% block app_content%}
 <form class="container" action="show" method="post" role="form" novalidate>
     {{ show.hidden_tag() }}

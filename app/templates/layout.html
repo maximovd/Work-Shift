@@ -40,23 +40,21 @@
                 </li>
                 {% else %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#"
+                    <a class="nav-link active dropdown-toggle" href="#"
                        id="navbarDropdown" role="button" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
 
                         Сотрудники
                     </a>
-                    <div class="dropdown-menu"
+                    <div class="dropdown-menu "
                          aria-labelledby="navbarDropdown">
                         <a class="dropdown-item"
                            href="{{url_for('admin.add_new_employee') }}">Добавить</a>
                         <a class="dropdown-item"
                            href="{{url_for('admin.browse_employees') }}">Показать</a>
-                        <a class="dropdown-item"
-                           href="{{url_for('admin.browse_employees') }}">Показать</a>
                     </div>
                 <li class="nav-item active">
-                <a class="nav-link" href="{{url_for('shift.employee_shift') }}">Рабочие
+                <a class="nav-link" href="{{url_for('admin.employee_shift')}}">Рабочие
                     смены</a>
                 <li class="nav-item"><a class="nav-item nav-link"
                                         href="{{url_for('auth.logout')}}">Выход</a>
