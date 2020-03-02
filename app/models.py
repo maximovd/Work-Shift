@@ -1,6 +1,9 @@
+import os
 from enum import Enum
+from flask import flash, current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from face_recognition import face_encodings, load_image_file
 
 from app import db, login
 
@@ -22,7 +25,41 @@ class Employees(db.Model):
     photo = db.Column(db.String(128))
 
     def __str__(self):
-        return f'Сотрудник {self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name}'
+
+
+def download_image(file_name, image: str) -> str:
+    destination = ''.join(
+        [
+            current_app.config['CURRENT_UPLOADS_DIRECTORY'],
+            file_name,
+        ],
+    )
+    destination = destination.replace(' ', '')
+    try:
+        image.save(destination)
+    except IsADirectoryError:
+        flash(
+            'Необходимо добавить фотографию сотрудника',
+            Category.DANGER.title,
+        )
+    return destination
+
+
+def face_encoding_image(destination: str):
+    load_photos = load_image_file(destination)
+    encoding = face_encodings(load_photos, num_jitters=100)
+    return encoding
+
+
+def delete_photo(photo_name: str) -> None:
+    destination = ''.join(
+        [
+            current_app.config['CURRENT_UPLOADS_DIRECTORY'],
+            photo_name,
+        ],
+    )
+    os.remove(destination)
 
 
 class User(db.Model, UserMixin):
@@ -76,6 +113,7 @@ class WorkShift(db.Model):
         unique=True,
     )
     employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
+    employee = db.relationship('Employees', back_populates='work_shift')
     arrival_time = db.Column(db.DateTime, index=True)
     depature_time = db.Column(db.DateTime, index=True)
 

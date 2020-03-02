@@ -1,14 +1,16 @@
 {% extends "layout.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block content %}
-    <h3 align="center"> Показать сотрудников подразделения</h3>
-    {% block app_content%}
-    <form class="container" action="show" method="post" role="form" novalidate>
-        {{ show.hidden_tag() }}
-        <p>
-            {{ wtf.form_field(show.department) }}
-        </p>
-        <p align="center">{{wtf.form_field(show.submit, class="btn btn-primary")}} </p>
-    </form>
+<h3 align="center"> Показать сотрудников подразделения</h3>
+<hr>
+{% block app_content%}
+<form class="container" action="show" method="post" role="form" novalidate>
+    {{ show.hidden_tag() }}
+    <p>
+        {{ wtf.form_field(show.department) }}
+    </p>
+    <p align="center">{{wtf.form_field(show.submit, class="btn
+        btn-dark")}} </p>
+</form>
 {% endblock %}
 {% endblock %}

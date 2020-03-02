@@ -17,6 +17,8 @@ class Config(object):
         'uploads',
         '',
     )
+    ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
+
 
 class ProductionConfig(Config):
     SECRET_KEY = os.environ.get('PROD_SECRET_KEY')
@@ -25,7 +27,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     SECRET_KEY = os.environ.get('DEV_SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('P_DEV_DATABASE_URL')
 
 
 class TestingConfig(Config):
