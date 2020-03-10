@@ -83,6 +83,33 @@ class EmployeeEditingForm(FlaskForm):
     image = HiddenField()
     submit = SubmitField('Изменить')
 
+    def validate_service_number(self, service_number):
+        """
+        The validator verifies the correctness of entering
+         the service number for 1C.
+        It must match the template 0000-00000(4 characters,
+         dashes, 5 characters)
+        """
+        regex = r'^[0-9]{4}[-]{1}[0-9]{5}$'
+        if re.fullmatch(regex, service_number.data) is None:
+            raise ValidationError(
+                'Не правильно введен табельный номер. Формат ввода 0000-00000',
+            )
+
+    def validate_first_name(self, first_name):
+
+        regex = r'^[А-Я]{1}[а-я]{2,25}'
+
+        if re.fullmatch(regex, first_name.data) is None:
+            raise ValidationError(
+                'Неправильный формат ввода имени (Пример: Иван)',
+            )
+
+        if re.fullmatch(regex, self.last_name.data) is None:
+            raise ValidationError(
+                'Неправильный формат ввода фамилии (Пример: Иванов)',
+            )
+
 
 class EmployeeDeleteForm(FlaskForm):
     id = HiddenField()

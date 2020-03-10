@@ -146,12 +146,13 @@ def employee_profile(employee_id):
         editing.service_number.data = employee.service_number
         editing.department.data = employee.department
         delete.id.data = employee.id
+
     if editing.validate_on_submit():
         employee = Employees.query.filter_by(id=employee_id).first()
 
         if request.files['image']:
             image = request.files['image']
-            if image.filename != '':  # TODO Exist photo filename in header
+            if image.filename != '':
                 photo = f'{uuid4()}.jpg'
                 destination = download_image(file_name=photo, image=image)
                 delete_photo(exist_photo)

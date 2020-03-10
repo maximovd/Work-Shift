@@ -116,6 +116,7 @@ class WorkShift(db.Model):
     employee = db.relationship('Employees', back_populates='work_shift')
     arrival_time = db.Column(db.DateTime, index=True)
     depature_time = db.Column(db.DateTime, index=True)
+    marked_department = db.Column(db.Integer)
 
 
 class ServerStatus(db.Model):
