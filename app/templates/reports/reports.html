@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<h3 align="center">Формирование отчета</h3>
+<hr>
+{% block app_content %}
+
+<form class="container" action="" method="post" role="form" novalidate>
+    {{ reports.hidden_tag() }}
+    <div class="row">
+        <div class="col">
+            {{wtf.form_field(reports.start_date)}}
+        </div>
+        <div class="col"
+             {{wtf.form_field(reports.end_date)}}
+    </div>
+    </div>
+    <p align="center">
+        {{ wtf.form_field(reports.submit, class="btn btn-primary")}}
+        <a href="">Выгрузить
+            отчет</a>
+    </p>
+
+</form>
+
+{% endblock %}
+
+{% endblock %}

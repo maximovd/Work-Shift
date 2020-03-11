@@ -10,13 +10,14 @@ class Config(object):
     DEBUG = False
     TESTING = False
     POSTS_PER_PAGE = 16
-    CURRENT_UPLOADS_DIRECTORY = os.path.join(
+    UPLOADS_DIRECTORY = os.path.join(
         os.path.dirname(__file__),
         'app',
         'static',
         'uploads',
         '',
     )
+
     ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
 
 

@@ -1,4 +1,8 @@
 import os
+import csv
+from uuid import UUID
+from typing import Union
+from datetime import date
 from enum import Enum
 from flask import flash, current_app
 from flask_login import UserMixin
@@ -6,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from face_recognition import face_encodings, load_image_file
 
 from app import db, login
+
+filename_type = Union[date, UUID]  # TODO Перенести объявление нового типа
 
 
 class Employees(db.Model):
@@ -28,10 +34,10 @@ class Employees(db.Model):
         return f'{self.first_name} {self.last_name}'
 
 
-def download_image(file_name, image: str) -> str:
+def download_image(file_name, image) -> str:
     destination = ''.join(
         [
-            current_app.config['CURRENT_UPLOADS_DIRECTORY'],
+            current_app.config['UPLOADS_DIRECTORY'],
             file_name,
         ],
     )
@@ -55,11 +61,47 @@ def face_encoding_image(destination: str):
 def delete_photo(photo_name: str) -> None:
     destination = ''.join(
         [
-            current_app.config['CURRENT_UPLOADS_DIRECTORY'],
+            current_app.config['UPLOADS_DIRECTORY'],
             photo_name,
         ],
     )
     os.remove(destination)
+
+
+def create_shift_report(filename: filename_type):
+
+    shift_dumps = WorkShift.query.outerjoin(Employees).all()
+
+    with open(
+            f'{current_app.config["UPLOADS_DIRECTORY"]}'
+            f'{filename}',
+            'w',
+    ) as report:
+        out = csv.writer(report)
+        out.writerow([
+            'id',
+            'first_name',
+            'last_name',
+            'service_number',
+            'department',
+            'arrival_time',
+            'depature_time',
+            'marked_department',
+        ],
+        )
+
+        for employee in shift_dumps:
+            out.writerow([
+                employee.employee_id,
+                employee.Employyes.first_name,
+                employee.Employyes.last_name,
+                employee.Employyes.service_number,
+                employee.Employyes.department,
+                employee.arrival_time,
+                employee.depature_time,
+                employee.marked_department,
+            ],
+            )
 
 
 class User(db.Model, UserMixin):
