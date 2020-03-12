@@ -17,7 +17,13 @@ class Config(object):
         'uploads',
         '',
     )
-
+    CSV_UPLOADS_DIRECTORY = os.path.join(
+        os.path.dirname(__file__),
+        'app',
+        'static',
+        'reports',
+        '',
+    )
     ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
 
 

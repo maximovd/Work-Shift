@@ -1,7 +1,7 @@
 import os
 import csv
 from uuid import UUID
-from typing import Union
+from typing import Union, NoReturn
 from datetime import date
 from enum import Enum
 from flask import flash, current_app
@@ -21,6 +21,7 @@ class Employees(db.Model):
         autoincrement=True,
         unique=True,
     )
+
     first_name = db.Column(db.String(30), index=True)
     last_name = db.Column(db.String(30), index=True)
     service_number = db.Column(db.String(30), index=True, unique=True)
@@ -52,13 +53,13 @@ def download_image(file_name, image) -> str:
     return destination
 
 
-def face_encoding_image(destination: str):
+def face_encoding_image(destination: str) -> list:
     load_photos = load_image_file(destination)
     encoding = face_encodings(load_photos, num_jitters=100)
     return encoding
 
 
-def delete_photo(photo_name: str) -> None:
+def delete_photo(photo_name: str) -> NoReturn:
     destination = ''.join(
         [
             current_app.config['UPLOADS_DIRECTORY'],
@@ -68,18 +69,17 @@ def delete_photo(photo_name: str) -> None:
     os.remove(destination)
 
 
-def create_shift_report(filename: filename_type):
-
-    shift_dumps = WorkShift.query.outerjoin(Employees).all()
+def create_shift_report(employees: list, filename: filename_type) -> NoReturn:
 
     with open(
-            f'{current_app.config["UPLOADS_DIRECTORY"]}'
-            f'{filename}',
+            f'{current_app.config["CSV_UPLOADS_DIRECTORY"]}'
+            f'{filename}.csv',
             'w',
     ) as report:
         out = csv.writer(report)
         out.writerow([
             'id',
+            'employee_id',
             'first_name',
             'last_name',
             'service_number',
@@ -90,13 +90,14 @@ def create_shift_report(filename: filename_type):
         ],
         )
 
-        for employee in shift_dumps:
+        for employee in employees:
             out.writerow([
+                employee.id,
                 employee.employee_id,
-                employee.Employyes.first_name,
-                employee.Employyes.last_name,
-                employee.Employyes.service_number,
-                employee.Employyes.department,
+                employee.employees.first_name,
+                employee.employees.last_name,
+                employee.employees.service_number,
+                employee.employees.department,
                 employee.arrival_time,
                 employee.depature_time,
                 employee.marked_department,
@@ -116,10 +117,10 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
 
-    def set_password(self, password):
+    def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password: str):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
@@ -157,7 +158,9 @@ class WorkShift(db.Model):
     employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
     employee = db.relationship('Employees', back_populates='work_shift')
     arrival_time = db.Column(db.DateTime, index=True)
+    start_date = db.Column(db.Date, index=True)
     depature_time = db.Column(db.DateTime, index=True)
+    end_date = db.Column(db.Date, index=True)
     marked_department = db.Column(db.Integer)
 
 
