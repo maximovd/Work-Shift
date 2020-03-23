@@ -2,6 +2,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
+<hr>
 <h3 align="center">Формирование отчета</h3>
 <hr>
 {% block app_content %}
@@ -12,15 +13,24 @@
         <div class="col">
             {{wtf.form_field(reports.start_date)}}
         </div>
-        <div class="col"
-             {{wtf.form_field(reports.end_date)}}
+        <div class="col">
+            {{wtf.form_field(reports.end_date)}}
+        </div>
+        <div class="col">
+            {{wtf.form_field(reports.department)}}
+        </div>
     </div>
+    <hr>
+    <div class="row" align="center">
+        <div class="col">
+            {{ wtf.form_field(reports.submit, class="btn btn-dark")}}
+        </div>
+        <div class="col">
+            <a class="btn btn-success"
+               href="{{ url_for('reports.download', filename=filename) }}">Выгрузить
+                отчет</a>
+        </div>
     </div>
-    <p align="center">
-        {{ wtf.form_field(reports.submit, class="btn btn-primary")}}
-        <a href="{{ url_for('reports.download', filename=filename) }}">Выгрузить
-            отчет</a>
-    </p>
 
 </form>
 

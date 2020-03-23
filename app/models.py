@@ -4,6 +4,8 @@ from uuid import UUID
 from typing import Union, NoReturn
 from datetime import date
 from enum import Enum
+
+from openpyxl import Workbook
 from flask import flash, current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -103,6 +105,19 @@ def create_shift_report(employees: list, filename: filename_type) -> NoReturn:
                 employee.marked_department,
             ],
             )
+
+
+def csv_to_xlsx(filename):
+    wb = Workbook()
+    ws = wb.active
+    with open(
+            f'{current_app.config["CSV_UPLOADS_DIRECTORY"]}{filename}.csv',
+            'r',
+    ) as f:
+        for row in csv.reader(f):
+            ws.append(row)
+    wb.save(f'{current_app.config["CSV_UPLOADS_DIRECTORY"]}{filename}.xlsx')
+    os.remove(f'{current_app.config["CSV_UPLOADS_DIRECTORY"]}{filename}.csv')
 
 
 class User(db.Model, UserMixin):
