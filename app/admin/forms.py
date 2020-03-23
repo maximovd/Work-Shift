@@ -3,7 +3,8 @@ import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.fields.html5 import DateField
+from wtforms.fields.html5 import DateField, DateTimeField
+from wtforms.widgets.html5 import DateTimeInput
 from wtforms.validators import DataRequired, ValidationError
 
 
@@ -34,7 +35,7 @@ class EmployeeAddingForm(FlaskForm):
         The validator verifies the correctness of entering
          the service number for 1C.
         It must match the template 0000-00000(4 characters,
-         dashes, 5 characters)
+         dashes, 5 characters).
         """
         regex = r'^[0-9]{4}[-]{1}[0-9]{5}$'
         if re.fullmatch(regex, service_number.data) is None:
@@ -88,12 +89,12 @@ class EmployeeEditingForm(FlaskForm):
         The validator verifies the correctness of entering
          the service number for 1C.
         It must match the template 0000-00000(4 characters,
-         dashes, 5 characters)
+         dashes, 5 characters).
         """
         regex = r'^[0-9]{4}[-]{1}[0-9]{5}$'
         if re.fullmatch(regex, service_number.data) is None:
             raise ValidationError(
-                'Не правильно введен табельный номер. Формат ввода 0000-00000',
+                'Не правильно введен табельный номер. Формат ввода 0000-12345',
             )
 
     def validate_first_name(self, first_name):
@@ -107,7 +108,7 @@ class EmployeeEditingForm(FlaskForm):
 
         if re.fullmatch(regex, self.last_name.data) is None:
             raise ValidationError(
-                'Неправильный формат ввода фамилии (Пример: Иванов)',
+                'Неправильный формат ввода фамилии (Пример: Петров)',
             )
 
 
@@ -126,7 +127,13 @@ class EmployeeShiftForm(FlaskForm):
         'Подразделение',
         validators=[DataRequired()],
         query_factory=get_departments,
-        allow_blank=True,
     )
     submit = SubmitField('Показать')
 
+
+class WorkShiftEditingForm(FlaskForm):
+    start_date = DateTimeField(
+        'Дата',
+        format='%Y-%m-%d %H:%M:%S',
+        widget=DateTimeInput(),
+    )

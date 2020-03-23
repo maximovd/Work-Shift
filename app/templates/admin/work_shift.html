@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+{% block app_content %}
+{{editing.hidden_tag()}}
+
+{{wtf.form_field(editing.start_date)}}
+
+{% endblock %}
+{% endblock %}

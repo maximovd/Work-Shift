@@ -43,7 +43,7 @@
             <td>{{employee.employees.department}}</td>
             <td>
                 <a id="employee_id"
-                   href=""
+                   href="{{url_for('admin.work_shift_page', shift_id=employee.id)}}"
                    class="badge badge-primary">Редактировать</a></td>
         </div>
     </tr>

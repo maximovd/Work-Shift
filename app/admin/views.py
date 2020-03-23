@@ -19,6 +19,7 @@ from app.admin.forms import (
     EmployeeEditingForm,
     EmployeeDeleteForm,
     EmployeeShiftForm,
+    WorkShiftEditingForm,
 )
 from app.models import (
     Employees,
@@ -214,16 +215,18 @@ def employee_shift():
     shift = EmployeeShiftForm()
     page = request.args.get('page', 1, type=int)
     employees = (
-        WorkShift.query.outerjoin(Employees).filter_by(
-            department=shift.department.data,
+        WorkShift.query.outerjoin(Employees).filter(
+            Employees.department == shift.department.data,
+            WorkShift.start_date == shift.date.data,
         ).paginate(
             page=page, per_page=current_app.config['POSTS_PER_PAGE'],
         )
     )
     if shift.validate_on_submit():
         employees = (
-            WorkShift.query.outerjoin(Employees).filter_by(
-                department=shift.department.data,
+            WorkShift.query.outerjoin(Employees).filter(
+                Employees.department == shift.department.data,
+                WorkShift.start_date == shift.date.data,
             ).paginate(
                 page=page, per_page=current_app.config['POSTS_PER_PAGE'],
             )
@@ -235,3 +238,16 @@ def employee_shift():
         shift=shift,
         employees=employees,
     )
+
+
+@bp.route('/workshift/<int:shift_id>', methods=['GET', 'POST'])
+@login_required
+def work_shift_page(shift_id):
+    editing = WorkShiftEditingForm()
+
+    work_shift = WorkShift.query.filter_by(id=shift_id).first()
+    if request.method == 'GET':
+
+        editing.start_date.date = work_shift.arrival_time
+
+    return render_template('admin/work_shift.html', editing=editing)

@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SubmitField
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import DateField
+from wtforms.widgets.html5 import DateTimeInput
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from app.models import Department
@@ -26,7 +27,6 @@ class WorkShiftReportsForm(FlaskForm):
         'Подразделение',
         validators=[DataRequired()],
         query_factory=get_departments,
-        allow_blank=True,
     )
     submit = SubmitField('Сформировать')
 
