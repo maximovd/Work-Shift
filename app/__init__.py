@@ -29,6 +29,9 @@ def create_app(config_class='config.DevelopmentConfig'):
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp)
 
+    from app.reports import bp as reports_bp
+    app.register_blueprint(reports_bp)
+
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 

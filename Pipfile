@@ -70,6 +70,9 @@ Flask-Uploads = "*"
 werkzeug = "==0.16.0"
 dlib = "*"
 face-recognition = "*"
+celery = "*"
+redis = "*"
+openpyxl = "*"
 
 [dev-packages]
 

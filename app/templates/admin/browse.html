@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block content %}
+<hr>
 <h3 align="center"> Показать сотрудников подразделения</h3>
 <hr>
 {% block app_content%}
@@ -12,5 +13,6 @@
     <p align="center">{{wtf.form_field(show.submit, class="btn
         btn-dark")}} </p>
 </form>
+<hr>
 {% endblock %}
 {% endblock %}
