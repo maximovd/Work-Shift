@@ -173,7 +173,7 @@ def employee_profile(employee_id):
             db.session.commit()
             flash('Информация обновлена', Category.SUCCESS.title)
         except exc.IntegrityError:
-            flash('Табельный номер существует', Category.DANGER.title)
+            flash('Ошибка, проверьте табельный номер', Category.DANGER.title)
 
             return redirect(url_for(
                 'admin.employee_profile',
@@ -248,6 +248,14 @@ def work_shift_page(shift_id):
     work_shift = WorkShift.query.filter_by(id=shift_id).first()
     if request.method == 'GET':
 
-        editing.start_date.date = work_shift.arrival_time
+        editing.first_name.data = work_shift.employee.first_name
+        editing.last_name.data = work_shift.employee.last_name
+        editing.arrival_time.data = work_shift.arrival_time
+        editing.departure_time.data = work_shift.departure_time
 
+    if editing.validate_on_submit():
+        work_shift.arrival_time = editing.arrival_time.data
+        work_shift.departure_time = editing.departure_time.data
+        db.session.commit()
+        flash('Обновлено', Category.SUCCESS.title)
     return render_template('admin/work_shift.html', editing=editing)

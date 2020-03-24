@@ -174,7 +174,7 @@ class WorkShift(db.Model):
     employee = db.relationship('Employees', back_populates='work_shift')
     arrival_time = db.Column(db.DateTime, index=True)
     start_date = db.Column(db.Date, index=True)
-    depature_time = db.Column(db.DateTime, index=True)
+    departure_time = db.Column(db.DateTime, index=True)
     end_date = db.Column(db.Date, index=True)
     marked_department = db.Column(db.Integer)
 

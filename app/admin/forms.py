@@ -4,7 +4,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields.html5 import DateField, DateTimeField
-from wtforms.widgets.html5 import DateTimeInput
 from wtforms.validators import DataRequired, ValidationError
 
 
@@ -44,7 +43,6 @@ class EmployeeAddingForm(FlaskForm):
             )
 
     def validate_first_name(self, first_name):
-
         regex = r'^[А-Я]{1}[а-я]{2,25}'
 
         if re.fullmatch(regex, first_name.data) is None:
@@ -132,8 +130,20 @@ class EmployeeShiftForm(FlaskForm):
 
 
 class WorkShiftEditingForm(FlaskForm):
-    start_date = DateTimeField(
-        'Дата',
+    first_name = StringField('Имя сотрудника', render_kw={'readonly': True})
+    last_name = StringField('Фамилия сотрудника', render_kw={'readonly': True})
+    arrival_time = DateTimeField(
+        'Дата и время начала смены',
         format='%Y-%m-%d %H:%M:%S',
-        widget=DateTimeInput(),
+        validators=[DataRequired(
+            message='Введите дату и время в правильном формате ',
+        )],
     )
+    departure_time = DateTimeField(
+        'Дата и время окончания смены',
+        format='%Y-%m-%d %H:%M:%S',
+        validators=[DataRequired(
+            message='Введите дату и время в правильном формате',
+        )],
+    )
+    submit = SubmitField('Сохранить')
