@@ -30,5 +30,12 @@
         btn-dark")}}
     </div>
 </form>
+<form class="container" action="{{url_for('admin.delete_work_shift')}}"
+      method="post" role="form" novalidate>
+{{delete.hidden_tag()}}
+    <div style="padding-left: 70%">
+        {{wtf.form_field(delete.submit, class="btn btn-danger")}}
+    </div>
+</form>
 {% endblock %}
 {% endblock %}

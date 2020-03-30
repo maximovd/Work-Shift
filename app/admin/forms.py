@@ -4,8 +4,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields.html5 import DateField, DateTimeField
-from wtforms.validators import DataRequired, ValidationError
-
+from wtforms.validators import DataRequired, ValidationError, Optional
+from wtforms.widgets.html5 import DateTimeLocalInput
 
 from app.models import Department
 
@@ -15,11 +15,20 @@ def get_departments():
 
 
 class EmployeeAddingForm(FlaskForm):
-    first_name = StringField('Имя', validators=[DataRequired()])
-    last_name = StringField('Фамилия', validators=[DataRequired()])
+    first_name = StringField(
+        'Имя',
+        validators=[DataRequired()],
+        render_kw={'placeholder': 'Иван'},
+    )
+    last_name = StringField(
+        'Фамилия',
+        validators=[DataRequired()],
+        render_kw={'placeholder': 'Петров'},
+    )
     service_number = StringField(
         'Табельный номер',
         validators=[DataRequired()],
+        render_kw={'placeholder': '0000-12345'},
     )
 
     department = QuerySelectField(
@@ -112,7 +121,7 @@ class EmployeeEditingForm(FlaskForm):
 
 class EmployeeDeleteForm(FlaskForm):
     id = HiddenField()
-    submit = SubmitField('Удалить из базы')
+    submit = SubmitField('Удалить профиль')
 
 
 class EmployeeShiftForm(FlaskForm):
@@ -138,6 +147,7 @@ class WorkShiftEditingForm(FlaskForm):
         validators=[DataRequired(
             message='Введите дату и время в правильном формате ',
         )],
+        render_kw={'placeholder': '2020-12-12 00:00:00'},
     )
     departure_time = DateTimeField(
         'Дата и время окончания смены',
@@ -145,5 +155,39 @@ class WorkShiftEditingForm(FlaskForm):
         validators=[DataRequired(
             message='Введите дату и время в правильном формате',
         )],
+        render_kw={'placeholder': '2020-12-12 00:00:00'},
+    )
+    submit = SubmitField('Сохранить')
+
+
+class WorkShiftDeleteForm(FlaskForm):
+    id = HiddenField()
+    submit = SubmitField('Удалить смену')
+
+
+class WorkShiftCreateForm(FlaskForm):
+    first_name = StringField('Имя', render_kw={'readonly': True})
+    last_name = StringField('Фамилия', render_kw={'readonly': True})
+    service_number = StringField(
+        'Табельный номер',
+        render_kw={'readonly': True},
+    )
+    arrival_time = DateTimeField(
+        'Дата и время начала смены',
+        format='%Y-%m-%d %H:%M:%S',
+        validators=[DataRequired(
+            message='Введите дату и время в правильном формате '
+                    'гг-мм-дд ч:м:с',
+        )],
+        widget=DateTimeLocalInput(),
+        render_kw={'placeholder': '2020-12-12 00:00:00'},
+    )
+
+    departure_time = DateTimeField(
+        'Дата и время окончания смены',
+        format='%Y-%m-%d %H:%M:%S',
+        validators=[Optional()],
+        render_kw={'placeholder': '2020-12-12 00:00:00'},
+        widget=DateTimeLocalInput(),
     )
     submit = SubmitField('Сохранить')

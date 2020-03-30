@@ -12,7 +12,6 @@ from app.models import (
     WorkShift,
     csv_to_xlsx,
 )
-
 from app.reports.forms import WorkShiftReportsForm
 
 

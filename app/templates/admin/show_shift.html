@@ -39,7 +39,9 @@
             <td>{{employee.employees.last_name}}</td>
             <td>{{employee.arrival_time}}</td>
             <td>{{employee.departure_time}}</td>
-            <td>{{employee.departure_time - employee.arrival_time}}</td>
+            {% if employee.departure_time != None %}
+                <td>{{employee.departure_time - employee.arrival_time}}</td>
+            {% endif %}
             <td>{{employee.employees.department}}</td>
             <td>
                 <a id="employee_id"

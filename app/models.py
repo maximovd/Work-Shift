@@ -80,15 +80,15 @@ def create_shift_report(employees: list, filename: filename_type) -> NoReturn:
     ) as report:
         out = csv.writer(report)
         out.writerow([
-            'id',
-            'employee_id',
-            'first_name',
-            'last_name',
-            'service_number',
-            'department',
-            'arrival_time',
-            'depature_time',
-            'marked_department',
+            'ID смены',
+            'ID сотрудника',
+            'Имя',
+            'Фамилия',
+            'Табельный номер',
+            'Подразделение',
+            'Время начала смены',
+            'Время окончания смены',
+            'Подразделение, где отметился',
         ],
         )
 
@@ -101,7 +101,7 @@ def create_shift_report(employees: list, filename: filename_type) -> NoReturn:
                 employee.employees.service_number,
                 employee.employees.department,
                 employee.arrival_time,
-                employee.depature_time,
+                employee.departure_time,
                 employee.marked_department,
             ],
             )

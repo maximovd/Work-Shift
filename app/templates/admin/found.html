@@ -9,6 +9,7 @@
         <th scope="col">Табельный номер</th>
         <th scope="col">Подразделение</th>
         <th scope="col"></th>
+        <th scope="col"></th>
     </tr>
     </thead>
     <tbody>
@@ -24,6 +25,9 @@
             <td>
                 <a href="{{url_for('admin.employee_profile', employee_id=employee.id)}}"
                    class="badge badge-primary">Редактировать</a></td>
+            <td>
+                <a href="{{url_for('admin.workshfit_create', employee_id=employee.id)}}"
+                   class="badge badge-warning">Создать рабочую смену</a></td>
         </div>
     </tr>
     {% endfor %}

@@ -6,6 +6,10 @@
       novalidate>
     {{ editing.hidden_tag()}}
     <hr>
+    <div style="text-align: center">
+        <h2>Профиль сотрудника</h2>
+    </div>
+    <hr>
     <img src="../../static/uploads/{{image_name}}" width="170" height="200"
          class="img-thumbnail mx-auto d-block" alt="..."
          onerror="this.src='../../static/uploads/default.png'">
@@ -47,7 +51,6 @@
     <p align="right"> {{wtf.form_field(delete.submit, class="btn
         btn-danger")}}</p>
 </form>
-<hr>
 {% if file_url %}
 <br>
 <img src="{{file_url}}">

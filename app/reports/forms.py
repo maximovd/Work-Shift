@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import SubmitField
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import DateField
-from wtforms.widgets.html5 import DateTimeInput
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from app.models import Department

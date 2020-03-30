@@ -20,6 +20,8 @@ from app.admin.forms import (
     EmployeeDeleteForm,
     EmployeeShiftForm,
     WorkShiftEditingForm,
+    WorkShiftDeleteForm,
+    WorkShiftCreateForm,
 )
 from app.models import (
     Employees,
@@ -244,10 +246,12 @@ def employee_shift():
 @login_required
 def work_shift_page(shift_id):
     editing = WorkShiftEditingForm()
+    delete = WorkShiftDeleteForm()
 
     work_shift = WorkShift.query.filter_by(id=shift_id).first()
     if request.method == 'GET':
 
+        delete.id.data = shift_id
         editing.first_name.data = work_shift.employee.first_name
         editing.last_name.data = work_shift.employee.last_name
         editing.arrival_time.data = work_shift.arrival_time
@@ -258,4 +262,72 @@ def work_shift_page(shift_id):
         work_shift.departure_time = editing.departure_time.data
         db.session.commit()
         flash('Обновлено', Category.SUCCESS.title)
-    return render_template('admin/work_shift.html', editing=editing)
+
+    return render_template(
+        'admin/work_shift.html',
+        editing=editing,
+        delete=delete,
+    )
+
+
+@bp.route('/delete_workshift', methods=['GET', 'POST'])
+@login_required
+def delete_work_shift():
+    editing = WorkShiftEditingForm()
+    delete = WorkShiftDeleteForm()
+
+    if delete.validate_on_submit():
+        work_shift_for_delete = WorkShift.query.filter_by(
+            id=delete.id.data,
+        ).first()
+        if work_shift_page is not None:
+            db.session.delete(work_shift_for_delete)
+            db.session.commit()
+        else:
+            flash(
+                'Невозможно удалить текущую смену, попробуйте еще раз',
+                Category.WARNING.title,
+            )
+
+        flash('Рабочая смена удалена', Category.SUCCESS.title)
+        return redirect(url_for('admin.employee_shift'))
+
+    return render_template(
+        'admin/work_shift.html',
+        editing=editing,
+        delete=delete,
+    )
+
+
+@bp.route('/workshift_create/<int:employee_id>', methods=['GET', 'POST'])
+def workshfit_create(employee_id):
+    create = WorkShiftCreateForm()
+    employee = Employees.query.filter_by(id=employee_id).first()
+    create.first_name.data = employee.first_name
+    create.last_name.data = employee.last_name
+    create.service_number.data = employee.service_number
+
+    if create.validate_on_submit():
+        work_shift = WorkShift(
+            employee_id=employee_id,
+            start_date=create.arrival_time.data,
+            arrival_time=create.arrival_time.data,
+            end_date=create.departure_time.data,
+            departure_time=create.departure_time.data,
+        )
+        db.session.add(work_shift)
+        try:
+            db.session.commit()
+        except exc.IntegrityError:
+            flash(
+                'Возникла непредвиденная ошибка, попробуйте еще раз',
+                Category.DANGER.title,
+            )
+            return redirect(url_for(
+                'admin.workshfit_create',
+                employee_id=employee_id,
+            ),
+            )
+        flash('Сохранено', Category.SUCCESS.title)
+        return redirect(url_for('admin.employee_shift'))
+    return render_template('admin/create_shift.html', create=create)
