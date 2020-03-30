@@ -26,7 +26,6 @@ class WorkShiftReportsForm(FlaskForm):
         'Подразделение',
         validators=[DataRequired()],
         query_factory=get_departments,
-        allow_blank=True,
     )
     submit = SubmitField('Сформировать')
 

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+{% block app_content %}
+<hr>
+<h2 align="center"> Редактировать смену сотрудника </h2>
+<hr>
+<form class="container" action="" method="post" role="form" novalidate>
+    {{editing.hidden_tag()}}
+    <div class="row" style="text-align: center; padding-left: 13%;">
+        <div class="col-lg-5">
+            {{wtf.form_field(editing.first_name)}}
+
+        </div>
+        <div class="col-lg-5">
+            {{wtf.form_field(editing.last_name)}}
+        </div>
+    </div>
+    <div class="row" style="text-align: center; padding-left: 13%;">
+        <div class="col-lg-5">
+            {{wtf.form_field(editing.arrival_time)}}
+
+        </div>
+        <div class="col-lg-5">
+            {{wtf.form_field(editing.departure_time)}}
+        </div>
+    </div>
+    <div style="text-align: center">
+        {{wtf.form_field(editing.submit, class="btn
+        btn-dark")}}
+    </div>
+</form>
+<form class="container" action="{{url_for('admin.delete_work_shift')}}"
+      method="post" role="form" novalidate>
+{{delete.hidden_tag()}}
+    <div style="padding-left: 70%">
+        {{wtf.form_field(delete.submit, class="btn btn-danger")}}
+    </div>
+</form>
+{% endblock %}
+{% endblock %}

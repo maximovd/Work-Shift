@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+{% block app_content %}
+<form class=container method="post" novalidate>
+    {{ create.hidden_tag()}}
+    <div style="text-align: center">
+        <h2>Создание смены</h2>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col">
+            {{ wtf.form_field(create.first_name) }}
+        </div>
+        <div class="col">
+            {{ wtf.form_field(create.last_name) }}
+        </div>
+        <div class="col">
+            {{ wtf.form_field(create.service_number) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{wtf.form_field(create.arrival_time)}}
+        </div>
+        <div class="col">
+            {{wtf.form_field(create.departure_time)}}
+        </div>
+    </div>
+<div style="text-align: center">
+    {{wtf.form_field(create.submit, class="btn btn-dark")}}
+</div>
+</form>
+{% endblock %}
+{% endblock %}
